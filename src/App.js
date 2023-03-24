@@ -26,8 +26,8 @@ function App() {
   });
 
   fetch("https://s3.amazonaws.com/CMSTest/squaw_creek_container_info.xml")
-    .then((response) => response.text())
-    .then((data) => {
+    .then(response => response.text())
+    .then(data => {
       let parser = new DOMParser();
       let xml = parser.parseFromString(data, "text/xml");
       let allPoint = xml.getElementsByTagName("POINT");
@@ -40,18 +40,18 @@ function App() {
       for (let i = 0; i < allPoint.length; i++) {
         let id = allPoint[i].getAttribute("id");
         let dataPoint = allPoint[i].getAttribute("data");
-        pointArr.forEach((j) => {
+        pointArr.forEach(j => {
           j = new Entity();
           j.name = "Point number #" + j + " ID: " + id;
           j.show = false;
           j.description = Cartesian3.fromDegrees(
-            Number(dataPoint.split(",")[0].trim()),
-            Number(dataPoint.split(",")[1].trim()),
+            Number(dataPoint.split(",")[0].replace(/\s/g, '')),
+            Number(dataPoint.split(",")[1].replace(/\s/g, '')),
             height
           );
           j.position = Cartesian3.fromDegrees(
-            Number(dataPoint.split(",")[0].trim()),
-            Number(dataPoint.split(",")[1].trim()),
+            Number(dataPoint.split(",")[0].replace(/\s/g, '')),
+            Number(dataPoint.split(",")[1].replace(/\s/g, '')),
             height
           );
           const newPoint = new PointGraphics();
@@ -78,20 +78,18 @@ function App() {
           }
         }
 
-        console.log(dataPoint);
-
         let j = 0;
         /* Lấy tọa độ hai điểm tạo thành đoạn thẳng. */
         const arr = [0, 0, 0, 0];
         for (let i = 0; i < allPoint.length; i++) {
           let pointID = allPoint[i].getAttribute("id");
           if (
-            dataPointArr.split(",")[0].trim() == pointID ||
-            dataPointArr.split(",")[1].trim() == pointID
+            dataPointArr.split(",")[0].replace(/\s/g, '') == pointID ||
+            dataPointArr.split(",")[1].replace(/\s/g, '') == pointID
           ) {
             let dataPoint = allPoint[i].getAttribute("data");
-            arr[j] = Number(dataPoint.split(",")[0].trim());
-            arr[j + 1] = Number(dataPoint.split(",")[1].trim());
+            arr[j] = Number(dataPoint.split(",")[0].replace(/\s/g, ''));
+            arr[j + 1] = Number(dataPoint.split(",")[1].replace(/\s/g, ''));
             j += 2;
           }
         }
@@ -119,7 +117,7 @@ function App() {
       const scene = viewer.scene;
       /* Chức năng cho phép nhấp vào đa giác và thay đổi màu sắc của đa giác đó. */
       const handler = new ScreenSpaceEventHandler(scene.canvas);
-      handler.setInputAction((movement) => {
+      handler.setInputAction(movement => {
         const pick = scene.pick(movement.position);
         if (defined(pick)) {
           const entity = viewer.entities.getById(pick.id.id);
@@ -138,7 +136,7 @@ function App() {
       function contains(arr, value) {
         var i = arr.length;
         while (i--) {
-          if (arr[i].trim() === value) {
+          if (arr[i].replace(/\s/g, '') === value) {
             return true;
           }
         }
@@ -175,15 +173,15 @@ function App() {
         arr[lt - 3] = arr[lt - 1];
         arr[lt - 2] = temp1;
         arr[lt - 1] = temp2;
-        
+
         return arr;
       }
 
       var listFace = [];
       /* Tạo đa giác. */
       for (let i = 0; i < allFace.length; i++) {
-        var listDataLine =
-          allFace[i].getElementsByTagName("POLYGON")[0].attributes[1].value;
+        var listDataLine = allFace[i].getElementsByTagName("POLYGON")[0]
+          .attributes[1].value;
         var FaceID = allFace[i].getAttribute("id");
         listFace[i] = new Entity();
         listFace[i].name = "Face number #" + i + " ID: " + FaceID;
@@ -234,14 +232,14 @@ function App() {
           height
         );
         const newPoint = new PointGraphics();
-        newPoint.color = Color.YELLOW;
-        newPoint.pixelSize = 3;
+        newPoint.color = Color.ORANGERED;
+        newPoint.pixelSize = 4;
         midPointArr[i].point = newPoint;
         viewer.entities.add(midPointArr[i]);
       }
     });
 
-  return <div></div>;
+  return <div />;
 }
 
 export default App;
