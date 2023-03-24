@@ -175,8 +175,7 @@ function App() {
         arr[lt - 3] = arr[lt - 1];
         arr[lt - 2] = temp1;
         arr[lt - 1] = temp2;
-
-        console.log(lt);
+        
         return arr;
       }
 
